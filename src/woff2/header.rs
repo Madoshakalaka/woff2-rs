@@ -21,18 +21,9 @@ pub enum Woff2HeaderError {
 pub struct Woff2Header {
     pub signature: FourCC,
     pub flavor: FourCC,
-    pub length: u32,
     pub num_tables: u16,
-    pub reserved: u16,
     pub total_sfnt_size: u32,
     pub total_compressed_size: u32,
-    pub major_version: u16,
-    pub minor_version: u16,
-    pub meta_offset: u32,
-    pub meta_length: u32,
-    pub meta_orig_length: u32,
-    pub private_offset: u32,
-    pub private_length: u32,
 }
 
 impl Woff2Header {
@@ -41,21 +32,21 @@ impl Woff2Header {
             return Err(Woff2HeaderError::Truncated);
         }
 
+        let signature = buffer.get_four_cc();
+        let flavor = buffer.get_four_cc();
+        buffer.advance(4);
+        let num_tables = buffer.get_u16();
+        buffer.advance(2);
+        let total_sfnt_size = buffer.get_u32();
+        let total_compressed_size = buffer.get_u32();
+        buffer.advance(24);
+
         Ok(Self {
-            signature: buffer.get_four_cc(),
-            flavor: buffer.get_four_cc(),
-            length: buffer.get_u32(),
-            num_tables: buffer.get_u16(),
-            reserved: buffer.get_u16(),
-            total_sfnt_size: buffer.get_u32(),
-            total_compressed_size: buffer.get_u32(),
-            major_version: buffer.get_u16(),
-            minor_version: buffer.get_u16(),
-            meta_offset: buffer.get_u32(),
-            meta_length: buffer.get_u32(),
-            meta_orig_length: buffer.get_u32(),
-            private_offset: buffer.get_u32(),
-            private_length: buffer.get_u32(),
+            signature,
+            flavor,
+            num_tables,
+            total_sfnt_size,
+            total_compressed_size,
         })
     }
 

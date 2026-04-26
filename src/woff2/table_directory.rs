@@ -52,7 +52,6 @@ impl Woff2TableDirectory {
             let complete_entry = TableDirectoryEntry {
                 transformed: entry.transformed,
                 tag: entry.tag,
-                dest_length: entry.orig_length,
                 src_length,
                 src_offset,
             };
@@ -164,8 +163,6 @@ impl Woff2TableDirectory {
 pub struct TableDirectoryEntry {
     pub transformed: bool,
     pub tag: FourCC,
-    /// The original length of the table (before any transformations)
-    pub dest_length: u32,
     /// The length of the table in the decompressed table data
     pub src_length: u32,
     /// The starting offset of the table in the decompressed table data

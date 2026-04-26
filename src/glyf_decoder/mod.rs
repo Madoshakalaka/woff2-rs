@@ -48,7 +48,7 @@ struct Woff2GlyfDecoder<'a, T> {
 
 fn bit_stream_byte_length(bit_stream_bit_length: u16) -> u16 {
     ((bit_stream_bit_length >> 5)
-        + if bit_stream_bit_length % 32 != 0 {
+        + if !bit_stream_bit_length.is_multiple_of(32) {
             1
         } else {
             0
@@ -381,7 +381,7 @@ impl<'a> Woff2GlyfDecoder<'a, &'a [u8]> {
     }
 }
 
-pub fn decode_glyf_table<'a>(glyf_table: &'a [u8]) -> Result<(Vec<u8>, Vec<u8>), GlyfDecoderError> {
+pub fn decode_glyf_table(glyf_table: &[u8]) -> Result<(Vec<u8>, Vec<u8>), GlyfDecoderError> {
     let mut decoder = Woff2GlyfDecoder::new(glyf_table)?;
     let res = decoder.parse_all_glyphs()?;
     if decoder.has_read_all() {

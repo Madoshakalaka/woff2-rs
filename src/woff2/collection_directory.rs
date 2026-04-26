@@ -45,7 +45,6 @@ impl TryFrom<u32> for CollectionHeaderVersion {
 
 /// A WOFF2 collection directory.
 pub struct CollectionHeader {
-    pub version: CollectionHeaderVersion,
     pub fonts: Vec<CollectionFontEntry>,
 }
 
@@ -55,7 +54,7 @@ impl CollectionHeader {
         buf: &mut impl Buf,
         total_num_tables: u16,
     ) -> Result<Self, CollectionHeaderError> {
-        let version = buf
+        let _: CollectionHeaderVersion = buf
             .try_get_u32()
             .map_err(|_| CollectionHeaderError::Truncated)?
             .try_into()?;
@@ -83,7 +82,7 @@ impl CollectionHeader {
                 })
             })
             .collect::<Result<_, _>>()?;
-        Ok(CollectionHeader { version, fonts })
+        Ok(CollectionHeader { fonts })
     }
 
     /// Calculates the total size of the OpenType Font Collection header, including the table
